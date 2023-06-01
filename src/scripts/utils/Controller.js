@@ -1,13 +1,14 @@
 export class Controller {
-  constructor(camera) {
+  constructor(camera, player) {
     this.camera = camera;
+    this.player = player;
     this.keysPressed = {};
 
     this.keyMap = {
-      a: () => (this.camera.position.x -= 0.1),
-      d: () => (this.camera.position.x += 0.1),
-      s: () => (this.camera.position.y -= 0.1),
-      w: () => (this.camera.position.y += 0.1),
+      a: () => (this.player.position.x -= 0.1),
+      d: () => (this.player.position.x += 0.1),
+      s: () => (this.player.position.y -= 0.1),
+      w: () => (this.player.position.y += 0.1),
     };
 
     document.addEventListener("keydown", (e) => this.setKeyPressed(e.key));
@@ -28,5 +29,11 @@ export class Controller {
         this.keyMap[key]();
       }
     });
+    this.updateCamera();
+  }
+
+  updateCamera() {
+    this.camera.position.x = this.player.position.x;
+    this.camera.position.y = this.player.position.y;
   }
 }
