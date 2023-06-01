@@ -1,23 +1,15 @@
-import * as THREE from "three";
+import { Cube } from "../entities/Cube";
 
 export function generateCubes(scene, quantity, color, size, speed) {
   const cubes = [];
   for (let i = 0; i < quantity; i++) {
-    const geometry = new THREE.BoxGeometry(size, size, size);
-    const material = new THREE.MeshBasicMaterial({ color });
-    const cube = new THREE.Mesh(geometry, material);
-    cube.position.x = Math.floor(Math.random() * i * 2) - i;
-    cube.position.y = Math.floor(Math.random() * i) - i;
-    cube.rotationSpeed = new THREE.Vector3(
-      Math.random() * speed - speed,
-      Math.random() * speed - speed,
-      0
-    );
-    cube.positionSpeed = new THREE.Vector3(
-      Math.random() * speed - speed,
-      Math.random() * speed - speed,
-      Math.random() * speed - speed
-    );
+    const cube = new Cube(color, size);
+    const cubeRandomSpeed = Math.random() * speed - speed;
+
+    cube.position.set(Math.floor(Math.random() * i * 2) - i, Math.floor(Math.random() * i) - i);
+    cube.rotationSpeed.set(cubeRandomSpeed, cubeRandomSpeed, 0);
+    cube.positionSpeed.set(cubeRandomSpeed, cubeRandomSpeed, cubeRandomSpeed);
+    
     cubes.push(cube);
   }
 

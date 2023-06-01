@@ -10,7 +10,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.z = 20;
+camera.position.z = 10;
 
 const controller = new Controller(camera);
 const renderer = buildRenderer(window.innerWidth, window.innerHeight, 0x131414);
