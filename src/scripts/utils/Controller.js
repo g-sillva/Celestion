@@ -1,7 +1,8 @@
 export class Controller {
-  constructor(camera, player) {
+  constructor(camera, player, aura) {
     this.camera = camera;
     this.player = player;
+    this.aura = aura;
     this.keysPressed = {};
 
     this.keyMap = {
@@ -30,10 +31,15 @@ export class Controller {
       }
     });
     this.updateCamera();
+    this.updateAura();
   }
 
   updateCamera() {
     this.camera.position.x = this.player.position.x;
     this.camera.position.y = this.player.position.y;
+  }
+
+  updateAura() {
+    this.aura.updatePosition();
   }
 }
