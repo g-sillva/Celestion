@@ -3,7 +3,8 @@ import { Controller } from "./utils/controller";
 import { animateCubes, generateCubes } from "./utils/CubeGenerator";
 import { buildRenderer } from "./utils/Renderer";
 import { generatePlayer } from "./utils/PlayerGenerator";
-import { checkCollision } from "./utils/collisionDetection";
+import { checkAuraCollision } from "./utils/collisionDetection";
+import { playerConsumeHandler } from "./utils/PlayerUtils";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -22,8 +23,9 @@ const cubes = generateCubes(scene, 1000, 0xc2352b, 0.1, 0.001);
 function animate() {
   requestAnimationFrame(animate);
   animateCubes(cubes);
+  checkAuraCollision(cubes, player);
+  playerConsumeHandler(camera, scene, cubes, player);
   controller.updateMoves();
-  checkCollision(cubes, player.getAura());
   renderer.render(scene, camera);
 }
 animate();
