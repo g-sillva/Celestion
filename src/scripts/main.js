@@ -1,10 +1,9 @@
 import * as THREE from "three";
-import { Controller } from "./utils/controller";
-import { animateCubes, generateCubes } from "./utils/CubeGenerator";
+import { Controller } from "./controller/controller";
+import { animateCubes, generateCubes } from "./utils/CubeUtils";
 import { buildRenderer } from "./utils/Renderer";
-import { generatePlayer } from "./utils/PlayerGenerator";
 import { checkAuraCollision } from "./utils/collisionDetection";
-import { playerConsumeHandler } from "./utils/PlayerUtils";
+import { playerConsumeHandler, generatePlayer } from "./utils/PlayerUtils";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
