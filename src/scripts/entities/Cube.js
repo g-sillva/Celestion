@@ -7,6 +7,7 @@ export class Cube extends THREE.Mesh {
     super(geometry, material);
     
     this.rotationSpeed = new THREE.Vector3();
-    this.positionSpeed = new THREE.Vector3();
+    this.acceleration = new THREE.Vector3();
+    this.velocity = new THREE.Vector3();
   }
 }

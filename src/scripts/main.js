@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Controller } from "./controller/controller";
+import { Controller } from "./controller/Controller";
 import { animateCubes, generateCubes } from "./utils/CubeUtils";
 import { buildRenderer } from "./utils/Renderer";
 import { checkAuraCollision } from "./utils/collisionDetection";

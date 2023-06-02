@@ -8,7 +8,7 @@ export function generateCubes(scene, quantity, color, size, speed) {
 
     cube.position.set(Math.floor(Math.random() * i * 2) - i, Math.floor(Math.random() * i) - i);
     cube.rotationSpeed.set(cubeRandomSpeed, cubeRandomSpeed, 0);
-    cube.positionSpeed.set(cubeRandomSpeed, cubeRandomSpeed, cubeRandomSpeed);
+    cube.velocity.set(cubeRandomSpeed, cubeRandomSpeed, cubeRandomSpeed);
     cubesMap.set(cube.id, cube);
   }
 
@@ -18,10 +18,10 @@ export function generateCubes(scene, quantity, color, size, speed) {
 
 export function animateCubes(cubes) {
   cubes.forEach((c) => {
-    c.position.x += c.positionSpeed.x;
-    c.position.y += c.positionSpeed.y;
-    c.position.z += c.positionSpeed.z;
-    c.rotation.x += c.rotationSpeed.x;
-    c.rotation.y += c.rotationSpeed.y;
+    c.position.x += c.velocity.x;
+    c.position.y += c.velocity.y;
+    c.position.z += c.velocity.z;
+    c.rotation.x += c.velocity.x;
+    c.rotation.y += c.velocity.y;
   })
 }

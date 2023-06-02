@@ -6,35 +6,38 @@ export function checkAuraCollision(cubes, player) {
     circle.position.x,
     circle.position.y
   );
+  const circleRadius = circle.scale.x * circle.getRadius();
+  const accelerationIncrease = 0.01;
+  const playerPosition = player.position;
 
   cubes.forEach((cube) => {
     const cubePosition = new THREE.Vector2(cube.position.x, cube.position.y);
+    const cubeRadius = cube.geometry.parameters.width / 2;
     const distance = cubePosition.distanceTo(circlePosition);
 
-    if (
-      distance <=
-      circle.geometry.parameters.radius + cube.geometry.parameters.width / 2
-    ) {
-      cube.material.color.setHex(0x0000ff);
-    } else {
-      cube.material.color.setHex(0xc2352b);
+    if (distance <= circleRadius + cubeRadius) {
+      cube.acceleration.x +=
+        cubePosition.x > playerPosition.x
+          ? -accelerationIncrease
+          : accelerationIncrease;
+      cube.acceleration.y +=
+        cubePosition.y > playerPosition.y
+          ? -accelerationIncrease
+          : accelerationIncrease;
+
+      cube.acceleration.multiplyScalar(1 - 0.9);
+      cube.velocity.add(cube.acceleration);
+      cube.velocity.clampLength(0, 0.1);
     }
   });
 }
 
 export function checkPlayerCollision(cubes, player) {
-  const playerBox = new THREE.Box3().setFromCenterAndSize(
-    player.position,
-    new THREE.Vector3(player.scale.x, player.scale.y, player.scale.z)
-  );
+  const playerBox = new THREE.Box3().setFromObject(player);
 
   let index = -1;
   cubes.forEach((cube, key) => {
-    const cubeSize = cube.scale.x;
-    const cubeBox = new THREE.Box3().setFromCenterAndSize(
-      cube.position,
-      new THREE.Vector3(cubeSize, cubeSize, cubeSize)
-    );
+    const cubeBox = new THREE.Box3().setFromObject(cube);
 
     if (cubeBox.intersectsBox(playerBox)) {
       index = key;
