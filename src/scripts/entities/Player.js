@@ -8,7 +8,8 @@ export class Player extends THREE.Mesh {
     super(geometry, material);
     this.position.set(position.x, position.y, position.z);
     this.aura = new Circle(2 * this.scale.x, this);
-    this.positionSpeed = new THREE.Vector3();
+    this.acceleration = new THREE.Vector3();
+    this.velocity = new THREE.Vector3();
   }
 
   getMesh() {
