@@ -1,5 +1,8 @@
+import * as THREE from 'three';
+
 import { checkPlayerCollision } from "./collisionDetection";
 import { Player } from "../entities/Player";
+import { AURA_BASE_SIZE, CAMERA_Z_POSITION, CUBE_MASS } from "./Constants";
 
 export function playerConsumeHandler(camera, scene, cubes, player) {
     const cubeIndex = checkPlayerCollision(cubes, player);
@@ -7,18 +10,27 @@ export function playerConsumeHandler(camera, scene, cubes, player) {
         const cube = cubes.get(cubeIndex);
         cubes.delete(cubeIndex);
         scene.remove(cube);
-        camera.position.z = 10 * player.mass;
-        player.scale.x += 0.005;
-        player.scale.y += 0.005;
-        player.scale.z += 0.001;
-        player.getAura().setRadius(2 * player.scale.x)
+
+        player.setMass(player.getMass() + CUBE_MASS);
+        player.getAura().setRadius(AURA_BASE_SIZE * player.scale.x);
+
+        const distanceFromPlayer = AURA_BASE_SIZE * player.mass * CAMERA_Z_POSITION;
+
+        const cameraPosition = new THREE.Vector3(0, 0, distanceFromPlayer);
+        player.localToWorld(cameraPosition);
+        camera.position.copy(cameraPosition);
     }
 }
 
 export function generatePlayer(camera, scene, color, mass, position) {
     const player = new Player(color, mass, position);
     const circle = player.getAura();
-    camera.position.z = 10 * mass;
+
+    const distanceFromPlayer = AURA_BASE_SIZE * player.mass * CAMERA_Z_POSITION;
+
+    const cameraPosition = new THREE.Vector3(0, 0, distanceFromPlayer);
+    player.localToWorld(cameraPosition);
+    camera.position.copy(cameraPosition);
 
     scene.add(player);
     scene.add(circle);

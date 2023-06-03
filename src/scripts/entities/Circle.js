@@ -18,6 +18,7 @@ export class Circle extends THREE.Mesh {
     this.geometry.dispose();
     this.geometry = new THREE.CircleGeometry(radius, 32);
     this.radius = radius;
+    this.scale.set(radius, radius, 1);
   }
 
   getRadius() {
