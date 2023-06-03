@@ -1,10 +1,10 @@
 import { Cube } from "../entities/Cube";
 
-export function generateCubes(scene, quantity, color, size, speed) {
+export function generateCubes(scene, quantity, mass, velocity) {
   const cubesMap = new Map();
   for (let i = 0; i < quantity; i++) {
-    const cube = new Cube(color, size);
-    const cubeRandomSpeed = Math.random() * speed - speed;
+    const cube = new Cube(0xc2352b, mass);
+    const cubeRandomSpeed = Math.random() * velocity - velocity;
 
     cube.position.set(Math.floor(Math.random() * i * 2) - i, Math.floor(Math.random() * i) - i);
     cube.rotationSpeed.set(cubeRandomSpeed, cubeRandomSpeed, 0);

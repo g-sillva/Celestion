@@ -4,20 +4,20 @@ import { animateCubes, generateCubes } from "./utils/CubeUtils";
 import { buildRenderer } from "./utils/Renderer";
 import { checkAuraCollision } from "./utils/collisionDetection";
 import { playerConsumeHandler, generatePlayer } from "./utils/PlayerUtils";
+import { BACKGROUND_COLOR, CAMERA_FAR_PLANE, CAMERA_FOV, CAMERA_NEAR_PLANE, CUBE_DEFAULT_SIZE, CUBE_DEFAULT_VELOCITY, PLAYER_INITIAL_MASS } from "./utils/Constants";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
-  75,
+  CAMERA_FOV,
   window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+  CAMERA_NEAR_PLANE,
+  CAMERA_FAR_PLANE,
 );
-camera.position.z = 10;
 
-const player = generatePlayer(camera, scene, 0xc2352b, 1, new THREE.Vector3(0, 0, 0));
+const player = generatePlayer(camera, scene, 0xc2352b, PLAYER_INITIAL_MASS, new THREE.Vector3(0, 0, 0));
 const controller = new Controller(camera, player, player.getAura());
-const renderer = buildRenderer(window.innerWidth, window.innerHeight, 0x131414);
-const cubes = generateCubes(scene, 1000, 0xc2352b, 0.1, 0.001);
+const renderer = buildRenderer(window.innerWidth, window.innerHeight, BACKGROUND_COLOR);
+const cubes = generateCubes(scene, 1000, CUBE_DEFAULT_SIZE, CUBE_DEFAULT_VELOCITY);
 
 function animate() {
   requestAnimationFrame(animate);
