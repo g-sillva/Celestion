@@ -5,8 +5,8 @@ export function generateCubes(scene, map, mass, velocity) {
   const cubesMap = new Map();
   const mapWidth = map.getWidth();
   const mapHeight = map.getHeight();
-  
-  const quantity = Math.floor(mapWidth * mapHeight) * CUBE_GENERATION_RATE;
+
+  let quantity = Math.floor(mapWidth * mapHeight) * CUBE_GENERATION_RATE;
 
   if (quantity === 0) quantity = 50;
 
@@ -14,8 +14,8 @@ export function generateCubes(scene, map, mass, velocity) {
     const cube = new Cube(0xc2352b, mass);
     const cubeRandomSpeed = Math.random() * velocity - velocity;
 
-    const randomX = (Math.random() * mapWidth) - mapWidth/2;
-    const randomY = (Math.random() * mapHeight) - mapHeight/2;
+    const randomX = Math.random() * mapWidth - mapWidth / 2;
+    const randomY = Math.random() * mapHeight - mapHeight / 2;
 
     cube.position.set(randomX, randomY, 0);
     cube.rotationSpeed.set(cubeRandomSpeed, cubeRandomSpeed, 0);
@@ -36,4 +36,14 @@ export function animateCubes(cubes) {
     c.rotation.x += c.velocity.x;
     c.rotation.y += c.velocity.y;
   });
+}
+
+export function cubeDisappearAnimation(scene, cube, cubes) {
+  cube.material.opacity -= 0.02;
+  cube.scale.addScalar(-0.02);
+
+  if (cube.material.opacity <= 0.0) {
+    scene.remove(cube);
+    cubes.delete(cube.id);
+  }
 }

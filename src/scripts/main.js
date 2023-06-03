@@ -4,6 +4,7 @@ import { animateCubes, generateCubes } from "./utils/CubeUtils";
 import { buildRenderer } from "./utils/Renderer";
 import {
   checkAuraCollision,
+  checkCubesBorderCollision,
   checkPlayerBorderCollision,
 } from "./utils/collisionDetection";
 import { playerConsumeHandler, generatePlayer } from "./utils/PlayerUtils";
@@ -61,6 +62,7 @@ function animate() {
   checkAuraCollision(cubes, player);
   playerConsumeHandler(camera, scene, cubes, player);
   checkPlayerBorderCollision(map, player);
+  checkCubesBorderCollision(scene, map, cubes);
   controller.updateMoves();
   renderer.render(scene, camera);
 }

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { cubeDisappearAnimation } from "./CubeUtils";
 
 export function checkAuraCollision(cubes, player) {
   const circle = player.getAura();
@@ -11,7 +12,7 @@ export function checkAuraCollision(cubes, player) {
   const circleRadius = circle.scale.x * circle.getRadius();
 
   cubes.forEach((cube) => {
-    if (cube.position.z === 0) {
+    if (cube.position.z === 0 && !cube.isDisappearing) {
       const cubePosition = new THREE.Vector2(cube.position.x, cube.position.y);
       const cubeRadius = cube.geometry.parameters.width / 2;
       const distance = cubePosition.distanceTo(circlePosition);
@@ -62,4 +63,24 @@ export function checkPlayerBorderCollision(map, player) {
     player.acceleration.add(accelerationChange);
     player.velocity.add(player.acceleration);
   }
+}
+
+export function checkCubesBorderCollision(scene, map, cubes) {
+  const mapWidth = map.getWidth();
+  const mapHeight = map.getHeight();
+
+  cubes.forEach((cube) => {
+    const cubePosition = cube.position;
+    const cubeScale = cube.scale;
+
+    if (
+      cubePosition.x + cubeScale.x > mapWidth / 2 ||
+      cubePosition.x - cubeScale.x < -mapWidth / 1.5 ||
+      cubePosition.y + cubeScale.y > mapHeight / 1.5 ||
+      cubePosition.y - cubeScale.y < -mapHeight / 1.5
+    ) {
+      cube.isDisappearing = true;
+      cubeDisappearAnimation(scene, cube, cubes);
+    }
+  });
 }
