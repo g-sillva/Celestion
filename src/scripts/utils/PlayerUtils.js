@@ -7,7 +7,7 @@ export function playerConsumeHandler(camera, scene, cubes, player) {
         const cube = cubes.get(cubeIndex);
         cubes.delete(cubeIndex);
         scene.remove(cube);
-        camera.position.z += 0.05;
+        camera.position.z = 10 * player.mass;
         player.scale.x += 0.005;
         player.scale.y += 0.005;
         player.scale.z += 0.001;
@@ -15,9 +15,10 @@ export function playerConsumeHandler(camera, scene, cubes, player) {
     }
 }
 
-export function generatePlayer(scene, color, size, position) {
-    const player = new Player(color, size, position);
+export function generatePlayer(camera, scene, color, mass, position) {
+    const player = new Player(color, mass, position);
     const circle = player.getAura();
+    camera.position.z = 10 * mass;
 
     scene.add(player);
     scene.add(circle);

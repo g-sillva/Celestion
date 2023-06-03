@@ -7,7 +7,7 @@ export class Player extends THREE.Mesh {
     const material = new THREE.MeshBasicMaterial({ color });
     super(geometry, material);
     this.position.set(position.x, position.y, position.z);
-    this.aura = new Circle(2, this);
+    this.aura = new Circle(2 * mass, this);
     this.mass = mass;
     this.acceleration = new THREE.Vector3();
     this.velocity = new THREE.Vector3();

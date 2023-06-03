@@ -14,7 +14,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.z = 10;
 
-const player = generatePlayer(scene, 0xc2352b, 1, new THREE.Vector3(0, 0, 0));
+const player = generatePlayer(camera, scene, 0xc2352b, 1, new THREE.Vector3(0, 0, 0));
 const controller = new Controller(camera, player, player.getAura());
 const renderer = buildRenderer(window.innerWidth, window.innerHeight, 0x131414);
 const cubes = generateCubes(scene, 1000, 0xc2352b, 0.1, 0.001);
