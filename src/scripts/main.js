@@ -2,7 +2,10 @@ import * as THREE from "three";
 import { Controller } from "./controller/Controller";
 import { animateCubes, generateCubes } from "./utils/CubeUtils";
 import { buildRenderer } from "./utils/Renderer";
-import { checkAuraCollision, checkPlayerBorderCollision } from "./utils/collisionDetection";
+import {
+  checkAuraCollision,
+  checkPlayerBorderCollision,
+} from "./utils/collisionDetection";
 import { playerConsumeHandler, generatePlayer } from "./utils/PlayerUtils";
 import { Map } from "./entities/Map";
 import {
@@ -47,7 +50,7 @@ const renderer = buildRenderer(
 
 const cubes = generateCubes(
   scene,
-  1000,
+  map,
   CUBE_DEFAULT_SIZE,
   CUBE_DEFAULT_VELOCITY
 );
@@ -57,7 +60,7 @@ function animate() {
   animateCubes(cubes);
   checkAuraCollision(cubes, player);
   playerConsumeHandler(camera, scene, cubes, player);
-  checkPlayerBorderCollision(map, player)
+  checkPlayerBorderCollision(map, player);
   controller.updateMoves();
   renderer.render(scene, camera);
 }
