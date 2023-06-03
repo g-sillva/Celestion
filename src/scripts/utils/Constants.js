@@ -12,3 +12,6 @@ export const CAMERA_FAR_PLANE = 1000;
 export const CAMERA_FOV = 75;
 export const PLAYER_INITIAL_MASS = 1;
 export const BACKGROUND_COLOR = 0x131414;
+export const MAP_WIDTH = 200;
+export const MAP_HEIGHT = 200;
+export const MAP_BORDER_COLOR = 0xc2352b;
