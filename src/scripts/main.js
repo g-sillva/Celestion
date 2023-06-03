@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Controller } from "./controller/Controller";
 import { animateCubes, generateCubes } from "./utils/CubeUtils";
 import { buildRenderer } from "./utils/Renderer";
-import { checkAuraCollision } from "./utils/collisionDetection";
+import { checkAuraCollision, checkPlayerBorderCollision } from "./utils/collisionDetection";
 import { playerConsumeHandler, generatePlayer } from "./utils/PlayerUtils";
 import { Map } from "./entities/Map";
 import {
@@ -35,7 +35,7 @@ const player = generatePlayer(
   new THREE.Vector3(0, 0, 0)
 );
 
-new Map(scene, MAP_WIDTH, MAP_HEIGHT, MAP_BORDER_COLOR);
+const map = new Map(scene, MAP_WIDTH, MAP_HEIGHT, MAP_BORDER_COLOR);
 
 const controller = new Controller(camera, player, player.getAura());
 
@@ -57,6 +57,7 @@ function animate() {
   animateCubes(cubes);
   checkAuraCollision(cubes, player);
   playerConsumeHandler(camera, scene, cubes, player);
+  checkPlayerBorderCollision(map, player)
   controller.updateMoves();
   renderer.render(scene, camera);
 }

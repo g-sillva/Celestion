@@ -9,6 +9,8 @@ export class Map extends THREE.Mesh {
     const borderGeometry = new THREE.EdgesGeometry(mapGeometry);
     const borderMaterial = new THREE.LineBasicMaterial({ color: borderColor });
     this.border = new THREE.LineSegments(borderGeometry, borderMaterial);
+    this.width = width;
+    this.height = height;
 
     scene.add(this);
     scene.add(this.border);
@@ -16,5 +18,13 @@ export class Map extends THREE.Mesh {
 
   getBorder() {
     return this.border;
+  }
+
+  getWidth() {
+    return this.width;
+  }
+
+  getHeight() {
+    return this.height;
   }
 }

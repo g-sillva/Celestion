@@ -27,7 +27,7 @@ export function checkAuraCollision(cubes, player) {
   });
 }
 
-export function checkPlayerCollision(cubes, player) {
+export function checkPlayerCubeCollision(cubes, player) {
   const playerBox = new THREE.Box3().setFromObject(player);
 
   let index = -1;
@@ -40,4 +40,21 @@ export function checkPlayerCollision(cubes, player) {
   });
 
   return index;
+}
+
+export function checkPlayerBorderCollision(map, player) {
+  const playerPosition = player.position;
+
+  if (playerPosition.x + player.scale.x > map.getWidth() / 2 ||
+      playerPosition.x - player.scale.x < -map.getWidth() / 2 ||
+      playerPosition.y + player.scale.y > map.getHeight() / 2 ||
+      playerPosition.y - player.scale.y < -map.getHeight() / 2) {
+    const centerPosition = new THREE.Vector3(0, 0, playerPosition.z);
+
+    const direction = centerPosition.clone().sub(playerPosition).normalize();
+
+    const accelerationChange = direction.multiplyScalar(0.003);
+    player.acceleration.add(accelerationChange);
+    player.velocity.add(player.acceleration)
+  }
 }

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 
-import { checkPlayerCollision } from "./collisionDetection";
+import { checkPlayerCubeCollision } from "./collisionDetection";
 import { Player } from "../entities/Player";
 import { AURA_BASE_SIZE, CAMERA_Z_POSITION, CUBE_MASS } from "./Constants";
 
 export function playerConsumeHandler(camera, scene, cubes, player) {
-    const cubeIndex = checkPlayerCollision(cubes, player);
+    const cubeIndex = checkPlayerCubeCollision(cubes, player);
     if (cubeIndex !== -1) {
         const cube = cubes.get(cubeIndex);
         cubes.delete(cubeIndex);
