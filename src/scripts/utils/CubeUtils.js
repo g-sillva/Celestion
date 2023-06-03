@@ -8,7 +8,7 @@ export function generateCubes(scene, quantity, color, size, speed) {
 
     cube.position.set(Math.floor(Math.random() * i * 2) - i, Math.floor(Math.random() * i) - i);
     cube.rotationSpeed.set(cubeRandomSpeed, cubeRandomSpeed, 0);
-    cube.velocity.set(cubeRandomSpeed, cubeRandomSpeed, cubeRandomSpeed);
+    cube.velocity.set(cubeRandomSpeed, cubeRandomSpeed, 0);
     cubesMap.set(cube.id, cube);
   }
 

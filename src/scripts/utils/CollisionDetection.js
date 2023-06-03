@@ -6,9 +6,8 @@ export function checkAuraCollision(cubes, player) {
     circle.position.x,
     circle.position.y
   );
+  const G = 0.01;
   const circleRadius = circle.scale.x * circle.getRadius();
-  const accelerationIncrease = 0.01;
-  const playerPosition = player.position;
 
   cubes.forEach((cube) => {
     const cubePosition = new THREE.Vector2(cube.position.x, cube.position.y);
@@ -16,18 +15,14 @@ export function checkAuraCollision(cubes, player) {
     const distance = cubePosition.distanceTo(circlePosition);
 
     if (distance <= circleRadius + cubeRadius) {
-      cube.acceleration.x +=
-        cubePosition.x > playerPosition.x
-          ? -accelerationIncrease
-          : accelerationIncrease;
-      cube.acceleration.y +=
-        cubePosition.y > playerPosition.y
-          ? -accelerationIncrease
-          : accelerationIncrease;
+      const direction = cubePosition.clone().sub(circlePosition).normalize();
+      const accelerationMagnitude = (G * player.mass) / Math.pow(distance, 2);
 
-      cube.acceleration.multiplyScalar(1 - 0.9);
-      cube.velocity.add(cube.acceleration);
-      cube.velocity.clampLength(0, 0.1);
+      cube.acceleration.add(direction.multiplyScalar(accelerationMagnitude));
+      cube.velocity.x -= cube.acceleration.x;
+      cube.velocity.y -= cube.acceleration.y;
+      cube.velocity.clampLength(0, 0.5);
+      cube.acceleration.set(0, 0);
     }
   });
 }
