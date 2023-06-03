@@ -13,7 +13,7 @@ import {
   CAMERA_FAR_PLANE,
   CAMERA_FOV,
   CAMERA_NEAR_PLANE,
-  CUBE_DEFAULT_SIZE,
+  CUBE_MASS,
   CUBE_DEFAULT_VELOCITY,
   MAP_BORDER_COLOR,
   MAP_HEIGHT,
@@ -51,7 +51,7 @@ const renderer = buildRenderer(
 const cubes = generateCubes(
   scene,
   map,
-  CUBE_DEFAULT_SIZE,
+  CUBE_MASS,
   CUBE_DEFAULT_VELOCITY
 );
 

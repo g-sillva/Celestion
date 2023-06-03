@@ -17,7 +17,7 @@ export function generateCubes(scene, map, mass, velocity) {
     const randomX = (Math.random() * mapWidth) - mapWidth/2;
     const randomY = (Math.random() * mapHeight) - mapHeight/2;
 
-    cube.position.set(randomX, randomY);
+    cube.position.set(randomX, randomY, 0);
     cube.rotationSpeed.set(cubeRandomSpeed, cubeRandomSpeed, 0);
     cube.velocity.set(cubeRandomSpeed, cubeRandomSpeed, 0);
 

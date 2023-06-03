@@ -11,7 +11,7 @@ export function playerConsumeHandler(camera, scene, cubes, player) {
         cubes.delete(cubeIndex);
         scene.remove(cube);
 
-        player.setMass(player.getMass() + CUBE_MASS);
+        player.setMass(player.getMass() + cube.getMass());
         player.getAura().setRadius(AURA_BASE_SIZE * player.scale.x);
 
         const distanceFromPlayer = AURA_BASE_SIZE * player.mass * CAMERA_Z_POSITION;
