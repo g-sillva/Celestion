@@ -1,4 +1,8 @@
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
+
 import { Controller } from "./controller/Controller";
 import { animateCubes, generateCubes } from "./utils/CubeUtils";
 import { buildRenderer } from "./utils/Renderer";
@@ -7,7 +11,7 @@ import {
   checkCubesBorderCollision,
   checkPlayerBorderCollision,
 } from "./utils/collisionDetection";
-import { playerConsumeHandler, generatePlayer, renderPlayerParticles } from "./utils/PlayerUtils";
+import { generatePlayer, renderPlayerParticles } from "./utils/PlayerUtils";
 import { Map } from "./entities/Map";
 import {
   BACKGROUND_COLOR,
@@ -46,7 +50,7 @@ const controller = new Controller(camera, player, player.getAura());
 const renderer = buildRenderer(
   window.innerWidth,
   window.innerHeight,
-  BACKGROUND_COLOR
+  0x000000
 );
 
 const cubes = generateCubes(
@@ -56,14 +60,31 @@ const cubes = generateCubes(
   CUBE_DEFAULT_VELOCITY
 );
 
+const composer = new EffectComposer(renderer);
+
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  2, // strength: intensidade do brilho (pode ajustar conforme necessário)
+  1, // radius: raio do brilho (pode ajustar conforme necessário)
+  0 // threshold: limiar para determinar quais pixels brilharão (pode ajustar conforme necessário)
+);
+composer.addPass(bloomPass);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.position.set(0, 1, 10); // Posição da luz (pode ajustar conforme necessário)
+scene.add(directionalLight);
+
 function animate() {
   requestAnimationFrame(animate);
-  animateCubes(cubes);
+  animateCubes(scene, cubes);
   checkAuraCollision(camera, scene, cubes, player);
   checkPlayerBorderCollision(map, player);
   checkCubesBorderCollision(scene, map, cubes);
   renderPlayerParticles(scene, player);
   controller.updateMoves();
-  renderer.render(scene, camera);
+  composer.render();
 }
 animate();

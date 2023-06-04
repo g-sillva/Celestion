@@ -3,7 +3,7 @@ import * as THREE from "three";
 export class Cube extends THREE.Mesh {
   constructor(color, mass) {
     const geometry = new THREE.BoxGeometry(mass * 20, mass * 20, mass * 20);
-    const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 1 });
+    const material = new THREE.MeshStandardMaterial({ color, transparent: true, opacity: 1, emissive: color, roughness: 0.5 });
     super(geometry, material);
     
     this.rotationSpeed = new THREE.Vector3();

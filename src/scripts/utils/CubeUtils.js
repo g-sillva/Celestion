@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 import { Cube } from "../entities/Cube";
 import { CUBE_GENERATION_RATE } from "./Constants";
 
@@ -28,14 +30,43 @@ export function generateCubes(scene, map, mass, velocity) {
   return cubesMap;
 }
 
-export function animateCubes(cubes) {
+export function animateCubes(scene, cubes) {
   cubes.forEach((c) => {
     c.position.x += c.velocity.x;
     c.position.y += c.velocity.y;
     c.position.z += c.velocity.z;
     c.rotation.x += c.velocity.x;
     c.rotation.y += c.velocity.y;
+
+    if (Math.abs(c.velocity.x) > 0.05 || Math.abs(c.velocity.y) > 0.05) {
+      generateCubesTrail(scene, c);
+    }
   });
+}
+
+export function generateCubesTrail(scene, cube) {
+  const trailGeometry = new THREE.BufferGeometry();
+  const trailPositions = new Map();
+  trailPositions.set(cube.id, [
+    cube.position.x,
+    cube.position.y,
+    cube.position.z,
+  ]);
+  const positionArray = Array.from(trailPositions.values()).flat();
+  trailGeometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(positionArray, 3)
+  );
+
+  const trailMaterial = new THREE.PointsMaterial({
+    color: cube.material.color,
+    size: cube.getMass() * 5,
+    opacity: 0.5,
+    transparent: true,
+  });
+
+  const trailParticles = new THREE.Points(trailGeometry, trailMaterial);
+  scene.add(trailParticles);
 }
 
 export function cubeDisappearAnimation(scene, cube, cubes) {

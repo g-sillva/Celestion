@@ -29,6 +29,7 @@ export class Player extends THREE.Mesh {
 
   addParticles(particle) {
     particle.material.color.set(0x4287f5);
+    particle.material.emissive.set(0x4287f5);
     this.particles.push(particle);
   }
 
