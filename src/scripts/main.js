@@ -25,6 +25,7 @@ import {
   MAP_WIDTH,
   PLAYER_INITIAL_MASS,
 } from "./utils/Constants";
+import { Player } from "./entities/Player";
 
 const scene = new THREE.Scene();
 
@@ -50,7 +51,7 @@ const controller = new Controller(camera, player, player.getAura());
 const renderer = buildRenderer(
   window.innerWidth,
   window.innerHeight,
-  0x000000
+  BACKGROUND_COLOR
 );
 
 const cubes = generateCubes(
@@ -67,9 +68,9 @@ composer.addPass(renderPass);
 
 const bloomPass = new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),
-  2, // strength: intensidade do brilho (pode ajustar conforme necessário)
-  1, // radius: raio do brilho (pode ajustar conforme necessário)
-  0 // threshold: limiar para determinar quais pixels brilharão (pode ajustar conforme necessário)
+  2,
+  1,
+  0
 );
 composer.addPass(bloomPass);
 
@@ -85,6 +86,19 @@ function animate() {
   checkCubesBorderCollision(scene, map, cubes);
   renderPlayerParticles(scene, player);
   controller.updateMoves();
+
+  var playerPosition = player.position;
+
+  scene.traverse(function (object) {
+    if (object instanceof THREE.Mesh) {
+      object.geometry.computeBoundingSphere();
+
+      var distance = playerPosition.distanceTo(object.position);
+
+      object.visible = distance <= camera.position.z * 1.5;
+    }
+  });
+
   composer.render();
 }
 animate();
