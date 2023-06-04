@@ -7,7 +7,7 @@ import {
   checkCubesBorderCollision,
   checkPlayerBorderCollision,
 } from "./utils/collisionDetection";
-import { playerConsumeHandler, generatePlayer } from "./utils/PlayerUtils";
+import { playerConsumeHandler, generatePlayer, renderPlayerParticles } from "./utils/PlayerUtils";
 import { Map } from "./entities/Map";
 import {
   BACKGROUND_COLOR,
@@ -59,10 +59,10 @@ const cubes = generateCubes(
 function animate() {
   requestAnimationFrame(animate);
   animateCubes(cubes);
-  checkAuraCollision(cubes, player);
-  playerConsumeHandler(camera, scene, cubes, player);
+  checkAuraCollision(camera, scene, cubes, player);
   checkPlayerBorderCollision(map, player);
   checkCubesBorderCollision(scene, map, cubes);
+  renderPlayerParticles(scene, player);
   controller.updateMoves();
   renderer.render(scene, camera);
 }

@@ -1,15 +1,18 @@
 import * as THREE from "three";
 import { cubeDisappearAnimation } from "./CubeUtils";
+import { playerConsumeHandler } from "./PlayerUtils";
+import { GRAVITACIONAL_CONSTANT } from "./Constants";
 
-export function checkAuraCollision(cubes, player) {
+export function checkAuraCollision(camera, scene, cubes, player) {
   const circle = player.getAura();
   const circlePosition = new THREE.Vector3(
     circle.position.x,
     circle.position.y,
     1
   );
-  const G = 0.01;
+  const G = GRAVITACIONAL_CONSTANT;
   const circleRadius = circle.scale.x * circle.getRadius();
+  const orbitDistance = circleRadius / 2;
 
   cubes.forEach((cube) => {
     if (cube.position.z === 0 && !cube.isDisappearing) {
@@ -17,7 +20,15 @@ export function checkAuraCollision(cubes, player) {
       const cubeRadius = cube.geometry.parameters.width / 2;
       const distance = cubePosition.distanceTo(circlePosition);
 
-      if (distance <= circleRadius + cubeRadius) {
+      if (distance < orbitDistance) {
+        cube.velocity.set(0, 0);
+        cube.acceleration.set(0, 0);
+
+        player.addParticles(cube);
+        playerConsumeHandler(camera, cube, player);
+        cubes.delete(cube.id);
+        scene.remove(cube);
+      } else if (distance <= circleRadius + cubeRadius) {
         const direction = cubePosition.clone().sub(circlePosition).normalize();
         const accelerationMagnitude = (G * player.mass) / Math.pow(distance, 2);
 
