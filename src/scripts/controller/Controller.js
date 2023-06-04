@@ -1,3 +1,5 @@
+import { PLAYER_ROTATION_RATE } from "../utils/Constants";
+
 export class Controller {
   constructor(camera, player, aura) {
     this.camera = camera;
@@ -35,7 +37,7 @@ export class Controller {
     } else if (this.player.velocity.x < 0) {
       this.player.acceleration.x = this.accelerationRate;
     }
-  
+
     if (this.player.velocity.y > 0) {
       this.player.acceleration.y = -this.accelerationRate;
     } else if (this.player.velocity.y < 0) {
@@ -59,6 +61,10 @@ export class Controller {
     this.player.velocity.add(this.player.acceleration);
     this.player.velocity.clampLength(0, this.maxSpeed);
     this.player.position.add(this.player.velocity);
+
+    const rotationFactor = this.player.velocity.length() / this.maxSpeed;
+    this.player.rotation.y += PLAYER_ROTATION_RATE * rotationFactor;
+    this.player.rotation.z += PLAYER_ROTATION_RATE * rotationFactor;
   }
 
   updateCamera() {

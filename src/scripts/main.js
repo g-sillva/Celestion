@@ -11,7 +11,7 @@ import {
   checkCubesBorderCollision,
   checkPlayerBorderCollision,
 } from "./utils/collisionDetection";
-import { generatePlayer, renderPlayerParticles } from "./utils/PlayerUtils";
+import { generatePlayer, generateRandomColor, renderPlayerParticles } from "./utils/PlayerUtils";
 import { Map } from "./entities/Map";
 import {
   BACKGROUND_COLOR,
@@ -38,7 +38,7 @@ const camera = new THREE.PerspectiveCamera(
 const player = generatePlayer(
   camera,
   scene,
-  0xc2352b,
+  generateRandomColor(),
   PLAYER_INITIAL_MASS,
   new THREE.Vector3(0, 0, 0)
 );
@@ -87,7 +87,6 @@ function animate() {
   renderPlayerParticles(scene, player);
   renderFarObjectsHandler(scene, camera, player);
   controller.updateMoves();
-
   composer.render();
 }
 animate();

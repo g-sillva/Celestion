@@ -8,10 +8,13 @@ export function playerConsumeHandler(camera, cube, player) {
   player.getAura().setRadius(AURA_BASE_SIZE * player.scale.x);
 
   const distanceFromPlayer = AURA_BASE_SIZE * player.mass * CAMERA_Z_POSITION;
+  camera.position.z = distanceFromPlayer;
 
-  const cameraPosition = new THREE.Vector3(0, 0, distanceFromPlayer);
-  player.localToWorld(cameraPosition);
-  camera.position.copy(cameraPosition);
+  const cameraOffset = new THREE.Vector3(0, 0, distanceFromPlayer);
+  cameraOffset.applyQuaternion(player.quaternion);
+
+  const cameraTargetPosition = player.localToWorld(new THREE.Vector3());
+  camera.lookAt(cameraTargetPosition);
 }
 
 export function renderPlayerParticles(scene, player) {
@@ -19,13 +22,13 @@ export function renderPlayerParticles(scene, player) {
   const circlePosition = new THREE.Vector3(
     circle.position.x,
     circle.position.y,
-    1
+    circle.position.z
   );
 
   const angleIncrement = (2 * Math.PI) / player.getParticles().length;
   const time = performance.now();
 
-  const orbitDistance = CUBE_ORBIT_DISTANCE * player.mass * (1 + Math.random());
+  const orbitDistance = CUBE_ORBIT_DISTANCE * (1 + Math.random() * player.getAura().getRadius());
 
   player.getParticles().forEach((cube, index) => {
     const cubeAngle = index * angleIncrement;
@@ -37,9 +40,9 @@ export function renderPlayerParticles(scene, player) {
     cube.orbitRadius = cube.initialOrbitRadius;
 
     const orbitX =
-      circlePosition.x + Math.cos(cubeAngle + time * CUBE_ORBIT_VELOCITY) * cube.orbitRadius;
+      circlePosition.x + Math.cos(cubeAngle + time * CUBE_ORBIT_VELOCITY + player.rotation.x) * cube.orbitRadius;
     const orbitY =
-      circlePosition.y + Math.sin(cubeAngle + time * CUBE_ORBIT_VELOCITY) * cube.orbitRadius;
+      circlePosition.y + Math.sin(cubeAngle + time * CUBE_ORBIT_VELOCITY + player.rotation.y) * cube.orbitRadius;
 
     cube.position.x = orbitX;
     cube.position.y = orbitY;
@@ -61,4 +64,23 @@ export function generatePlayer(camera, scene, color, mass, position) {
   scene.add(player);
   scene.add(circle);
   return player;
+}
+
+export function generateRandomColor() {
+  const minBrightness = 32;
+  const maxBrightness = 255;
+
+  let color = 0;
+  let brightness = 0;
+
+  do {
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    brightness = (red + green + blue) / 3;
+    color = (red << 16) + (green << 8) + blue;
+  } while (brightness < minBrightness || brightness > maxBrightness);
+
+  return color;
 }

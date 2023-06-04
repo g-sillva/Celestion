@@ -1,12 +1,14 @@
 import * as THREE from "three";
 import { Circle } from "./Circle";
-import { AURA_BASE_SIZE } from "../utils/Constants";
+import { AURA_BASE_SIZE, PLAYER_SCALE_MULTIPLIER } from "../utils/Constants";
 
 export class Player extends THREE.Mesh {
   constructor(color, mass, position) {
-    const geometry = new THREE.BoxGeometry(mass, mass, mass);
-    const material = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 });
+    const geometry = new THREE.SphereGeometry(mass * PLAYER_SCALE_MULTIPLIER, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ color });
     super(geometry, material);
+
+    this.color = color;
     this.position.set(position.x, position.y, position.z);
     this.aura = new Circle(AURA_BASE_SIZE * mass, this);
     this.mass = mass;
@@ -28,8 +30,8 @@ export class Player extends THREE.Mesh {
   }
 
   addParticles(particle) {
-    particle.material.color.set(0x4287f5);
-    particle.material.emissive.set(0x4287f5);
+    particle.material.color.set(this.color);
+    particle.material.emissive.set(this.color);
     this.particles.push(particle);
   }
 
@@ -38,8 +40,7 @@ export class Player extends THREE.Mesh {
   }
 
   setMass(mass) {
-    this.scale.set(mass, mass, mass);
-    this.geometry = new THREE.BoxGeometry(mass, mass, mass);
+    this.geometry = new THREE.SphereGeometry(mass * PLAYER_SCALE_MULTIPLIER, 32, 32);
     this.aura.setRadius(this.aura.getRadius() * mass);
     this.mass = mass;
   }
