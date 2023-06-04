@@ -4,8 +4,8 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 
 import { Controller } from "./controller/Controller";
-import { animateCubes, generateCubes } from "./utils/CubeUtils";
-import { buildRenderer } from "./utils/Renderer";
+import { animateCubes, generateCubes, particlesTrailHandler } from "./utils/CubeUtils";
+import { buildRenderer, renderFarObjectsHandler } from "./utils/Renderer";
 import {
   checkAuraCollision,
   checkCubesBorderCollision,
@@ -25,7 +25,6 @@ import {
   MAP_WIDTH,
   PLAYER_INITIAL_MASS,
 } from "./utils/Constants";
-import { Player } from "./entities/Player";
 
 const scene = new THREE.Scene();
 
@@ -75,29 +74,19 @@ const bloomPass = new UnrealBloomPass(
 composer.addPass(bloomPass);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-directionalLight.position.set(0, 1, 10); // Posição da luz (pode ajustar conforme necessário)
+directionalLight.position.set(0, 1, 10);
 scene.add(directionalLight);
 
 function animate() {
   requestAnimationFrame(animate);
   animateCubes(scene, cubes);
+  particlesTrailHandler(scene);
   checkAuraCollision(camera, scene, cubes, player);
   checkPlayerBorderCollision(map, player);
   checkCubesBorderCollision(scene, map, cubes);
   renderPlayerParticles(scene, player);
+  renderFarObjectsHandler(scene, camera, player);
   controller.updateMoves();
-
-  var playerPosition = player.position;
-
-  scene.traverse(function (object) {
-    if (object instanceof THREE.Mesh) {
-      object.geometry.computeBoundingSphere();
-
-      var distance = playerPosition.distanceTo(object.position);
-
-      object.visible = distance <= camera.position.z * 1.5;
-    }
-  });
 
   composer.render();
 }

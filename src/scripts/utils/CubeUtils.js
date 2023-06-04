@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import { Cube } from "../entities/Cube";
-import { CUBE_GENERATION_RATE } from "./Constants";
+import { CUBE_FADE_RATE, CUBE_GENERATION_RATE, TRAIL_FADE_RATE } from "./Constants";
 
 export function generateCubes(scene, map, mass, velocity) {
   const cubesMap = new Map();
@@ -44,6 +44,8 @@ export function animateCubes(scene, cubes) {
   });
 }
 
+const trailParticlesList = [];
+
 export function generateCubesTrail(scene, cube) {
   const trailGeometry = new THREE.BufferGeometry();
   const trailPositions = new Map();
@@ -60,18 +62,38 @@ export function generateCubesTrail(scene, cube) {
 
   const trailMaterial = new THREE.PointsMaterial({
     color: cube.material.color,
-    size: cube.getMass() * 5,
+    size: cube.getMass(),
     opacity: 0.5,
     transparent: true,
   });
 
   const trailParticles = new THREE.Points(trailGeometry, trailMaterial);
   scene.add(trailParticles);
+  trailParticlesList.push(trailParticles);
+}
+
+export function particlesTrailHandler(scene) {
+  const removalList = [];
+
+  trailParticlesList.forEach((particle) => {
+    const material = particle.material;
+    material.opacity -= TRAIL_FADE_RATE;
+
+    if (material.opacity <= 0) {
+      removalList.push(particle);
+      scene.remove(particle);
+    }
+  });
+
+  removalList.forEach((particle) => {
+    scene.remove(particle);
+    trailParticlesList.splice(trailParticlesList.indexOf(particle), 1);
+  });
 }
 
 export function cubeDisappearAnimation(scene, cube, cubes) {
-  cube.material.opacity -= 0.02;
-  cube.scale.addScalar(-0.02);
+  cube.material.opacity -= CUBE_FADE_RATE;
+  cube.scale.addScalar(-CUBE_FADE_RATE);
 
   if (cube.material.opacity <= 0.0) {
     scene.remove(cube);
