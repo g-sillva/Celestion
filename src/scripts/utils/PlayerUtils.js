@@ -4,18 +4,12 @@ import { Player } from "../entities/Player";
 import {
   AURA_BASE_SIZE,
   CAMERA_Z_POSITION,
-  CUBE_ORBIT_VELOCITY,
-  CUBE_MIN_ORBIT_DISTANCE,
+  PARTICLE_ORBIT_VELOCITY,
+  PARTICLE_MIN_ORBIT_DISTANCE,
 } from "./Constants";
 
-export function playerConsumeHandler(camera, cube, player) {
-  player.setMass(player.getMass() + cube.getMass());
-
-  const distanceFromPlayer = AURA_BASE_SIZE * CAMERA_Z_POSITION + Math.log2(player.getMass());
-  camera.position.z = distanceFromPlayer;
-
-  const cameraTargetPosition = player.localToWorld(new THREE.Vector3());
-  camera.lookAt(cameraTargetPosition);
+export function playerConsumeHandler(camera, player, cubes) {
+  // todo
 }
 
 export function renderPlayerParticles(scene, player) {
@@ -29,25 +23,25 @@ export function renderPlayerParticles(scene, player) {
   const angleIncrement = (2 * Math.PI) / player.getParticles().length;
   const time = performance.now();
   
-  player.getParticles().forEach((cube, index) => {
-    const cubeAngle = index * angleIncrement;
-    const orbitDistance = Math.random() * (player.getAura().getRadius() - CUBE_MIN_ORBIT_DISTANCE) + CUBE_MIN_ORBIT_DISTANCE;
+  player.getParticles().forEach((particle, index) => {
+    const particleAngle = index * angleIncrement;
+    const orbitDistance = Math.random() * (player.getAura().getRadius() - PARTICLE_MIN_ORBIT_DISTANCE) + PARTICLE_MIN_ORBIT_DISTANCE;
 
-    if (cube.orbitRadius === undefined) {
-      cube.initialOrbitRadius = orbitDistance;
+    if (particle.orbitRadius === undefined) {
+      particle.initialOrbitRadius = orbitDistance;
     }
 
-    cube.orbitRadius = cube.initialOrbitRadius;
+    particle.orbitRadius = particle.initialOrbitRadius;
 
     const orbitX =
-      circlePosition.x + Math.cos(cubeAngle + time * CUBE_ORBIT_VELOCITY + player.rotation.x) * cube.orbitRadius;
+      circlePosition.x + Math.cos(particleAngle + time * PARTICLE_ORBIT_VELOCITY + player.rotation.x) * particle.orbitRadius;
     const orbitY =
-      circlePosition.y + Math.sin(cubeAngle + time * CUBE_ORBIT_VELOCITY + player.rotation.y) * cube.orbitRadius;
+      circlePosition.y + Math.sin(particleAngle + time * PARTICLE_ORBIT_VELOCITY + player.rotation.y) * particle.orbitRadius;
 
-    cube.position.x = orbitX;
-    cube.position.y = orbitY;
+    particle.position.x = orbitX;
+    particle.position.y = orbitY;
 
-    scene.add(cube);
+    scene.add(particle);
   });
 }
 
@@ -65,7 +59,7 @@ export function generatePlayer(camera, scene, color, mass, position) {
   const player = new Player(color, mass, position);
   const circle = player.getAura();
 
-  const distanceFromPlayer = AURA_BASE_SIZE * player.mass * CAMERA_Z_POSITION;
+  const distanceFromPlayer = AURA_BASE_SIZE * player.getMass() * CAMERA_Z_POSITION;
 
   const cameraPosition = new THREE.Vector3(0, 0, distanceFromPlayer);
   player.localToWorld(cameraPosition);

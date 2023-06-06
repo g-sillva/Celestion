@@ -7,7 +7,6 @@ export class Player extends THREE.Mesh {
     const geometry = new THREE.SphereGeometry(mass * PLAYER_SCALE_MULTIPLIER, 32, 32);
     const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0 });
     super(geometry, material);
-
     this.color = color;
     this.spawned = true;
     this.position.set(position.x, position.y, position.z);

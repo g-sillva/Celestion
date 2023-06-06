@@ -4,11 +4,12 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 
 import { Controller } from "./controller/Controller";
-import { animateCubes, generateCubes, particlesTrailHandler } from "./utils/CubeUtils";
+import { animateParticles, generateParticles, particlesTrailHandler } from "./utils/ParticleUtils";
 import { buildRenderer, renderFarObjectsHandler } from "./utils/Renderer";
 import {
   checkAuraCollision,
-  checkCubesBorderCollision,
+  checkParticlesBorderCollision,
+  checkParticlesParticleCollision,
   checkPlayerBorderCollision,
 } from "./utils/collisionDetection";
 import { generatePlayer, generateRandomColor, renderPlayerParticles } from "./utils/PlayerUtils";
@@ -18,8 +19,8 @@ import {
   CAMERA_FAR_PLANE,
   CAMERA_FOV,
   CAMERA_NEAR_PLANE,
-  CUBE_MASS,
-  CUBE_DEFAULT_VELOCITY,
+  PARTICLE_MASS,
+  PARTICLE_DEFAULT_VELOCITY,
   MAP_BORDER_COLOR,
   MAP_HEIGHT,
   MAP_WIDTH,
@@ -53,11 +54,11 @@ const renderer = buildRenderer(
   BACKGROUND_COLOR
 );
 
-const cubes = generateCubes(
+const particles = generateParticles(
   scene,
   map,
-  CUBE_MASS,
-  CUBE_DEFAULT_VELOCITY
+  PARTICLE_MASS,
+  PARTICLE_DEFAULT_VELOCITY
 );
 
 const composer = new EffectComposer(renderer);
@@ -79,13 +80,14 @@ scene.add(directionalLight);
 
 function animate() {
   requestAnimationFrame(animate);
-  animateCubes(scene, cubes);
+  animateParticles(scene, particles);
   particlesTrailHandler(scene);
-  checkAuraCollision(camera, scene, cubes, player);
+  checkAuraCollision(camera, scene, particles, player);
   renderPlayerParticles(scene, player);
   checkPlayerBorderCollision(map, player);
-  checkCubesBorderCollision(scene, map, cubes);
+  checkParticlesParticleCollision(scene, particles);
   renderFarObjectsHandler(scene, camera, player);
+  checkParticlesBorderCollision(scene, map, particles);
   controller.updateMoves();
   composer.render();
 }

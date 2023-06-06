@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import { cubeDisappearAnimation } from "./CubeUtils";
+import { particleDisappearAnimation } from "./ParticleUtils";
 import { playerConsumeHandler, playerSpawnAnimation } from "./PlayerUtils";
 import { GRAVITACIONAL_CONSTANT } from "./Constants";
 
-export function checkAuraCollision(camera, scene, cubes, player) {
+export function checkAuraCollision(camera, scene, particles, player) {
   if (player.spawned) return;
 
   playerSpawnAnimation(player);
@@ -18,44 +18,65 @@ export function checkAuraCollision(camera, scene, cubes, player) {
   const circleRadius = circle.scale.x * circle.getRadius();
   const orbitDistance = circleRadius / 1.5;
 
-  cubes.forEach((cube) => {
-    if (cube.position.z === 0 && !cube.isDisappearing) {
-      const cubePosition = new THREE.Vector2(cube.position.x, cube.position.y);
-      const cubeRadius = cube.geometry.parameters.width / 2;
-      const distance = cubePosition.distanceTo(circlePosition);
+  particles.forEach((particle) => {
+    if (particle.position.z === 0 && !particle.isDisappearing) {
+      const particlePosition = new THREE.Vector2(particle.position.x, particle.position.y);
+      const particleRadius = particle.geometry.parameters.width / 2;
+      const distance = particlePosition.distanceTo(circlePosition);
 
       if (distance < orbitDistance) {
-
-        player.addParticles(cube);
-        playerConsumeHandler(camera, cube, player);
-        cubes.delete(cube.id);
-        scene.remove(cube);
-      } else if (distance <= circleRadius + cubeRadius) {
-        const direction = cubePosition.clone().sub(circlePosition).normalize();
+        player.addParticles(particle);
+        playerConsumeHandler(camera, particle, player, particles);
+        particles.delete(particle.id);
+        scene.remove(particle);
+      } else if (distance <= circleRadius + particleRadius) {
+        const direction = particlePosition.clone().sub(circlePosition).normalize();
         const accelerationMagnitude = (G * player.mass) / Math.pow(distance, 2);
 
-        cube.acceleration.add(direction.multiplyScalar(accelerationMagnitude));
-        cube.velocity.x -= cube.acceleration.x;
-        cube.velocity.y -= cube.acceleration.y;
-        cube.velocity.clampLength(0, 0.5);
+        particle.acceleration.add(direction.multiplyScalar(accelerationMagnitude));
+        particle.velocity.x -= particle.acceleration.x;
+        particle.velocity.y -= particle.acceleration.y;
+        particle.velocity.clampLength(0, 0.5);
       }
     }
   });
 }
 
-export function checkPlayerCubeCollision(cubes, player) {
-  const playerBox = new THREE.Box3().setFromObject(player);
+export function checkParticlesParticleCollision(scene, particles) {
+  const gridSize = 100; // Tamanho da célula da grade
+  const grid = {}; // Grade espacial
 
-  let index = -1;
-  cubes.forEach((cube, key) => {
-    const cubeBox = new THREE.Box3().setFromObject(cube);
+  // Criar células vazias na grade
+  particles.forEach((particle) => {
+    const cellX = Math.floor(particle.position.x / gridSize);
+    const cellY = Math.floor(particle.position.y / gridSize);
+    const cellKey = `${cellX}_${cellY}`;
 
-    if (cubeBox.intersectsBox(playerBox)) {
-      index = key;
+    if (!grid[cellKey]) {
+      grid[cellKey] = [];
     }
+
+    grid[cellKey].push(particle);
   });
 
-  return index;
+  Object.values(grid).forEach((cell) => {
+    for (let i = 0; i < cell.length; i++) {
+      const particleA = cell[i];
+
+      for (let j = i + 1; j < cell.length; j++) {
+        const particleB = cell[j];
+
+        const boxA = new THREE.Box3().setFromObject(particleA);
+        const boxB = new THREE.Box3().setFromObject(particleB);
+  
+        if (boxA.intersectsBox(boxB)) {
+          scene.remove(particleA);
+          particleB.addMass(particleA.getMass() * 2);
+          particleB.material.color.setHex(0xffffff);
+        }
+      }
+    }
+  });
 }
 
 export function checkPlayerBorderCollision(map, player) {
@@ -77,22 +98,22 @@ export function checkPlayerBorderCollision(map, player) {
   }
 }
 
-export function checkCubesBorderCollision(scene, map, cubes) {
+export function checkParticlesBorderCollision(scene, map, particles) {
   const mapWidth = map.getWidth();
   const mapHeight = map.getHeight();
 
-  cubes.forEach((cube) => {
-    const cubePosition = cube.position;
-    const cubeScale = cube.scale;
+  particles.forEach((particle) => {
+    const particlePosition = particle.position;
+    const particleScale = particle.scale;
 
     if (
-      cubePosition.x + cubeScale.x > mapWidth / 2 ||
-      cubePosition.x - cubeScale.x < -mapWidth / 1.5 ||
-      cubePosition.y + cubeScale.y > mapHeight / 1.5 ||
-      cubePosition.y - cubeScale.y < -mapHeight / 1.5
+      particlePosition.x + particleScale.x > mapWidth / 2 ||
+      particlePosition.x - particleScale.x < -mapWidth / 1.5 ||
+      particlePosition.y + particleScale.y > mapHeight / 1.5 ||
+      particlePosition.y - particleScale.y < -mapHeight / 1.5
     ) {
-      cube.isDisappearing = true;
-      cubeDisappearAnimation(scene, cube, cubes);
+      particle.isDisappearing = true;
+      particleDisappearAnimation(scene, particle, particles);
     }
   });
 }
