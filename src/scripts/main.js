@@ -82,9 +82,9 @@ function animate() {
   animateCubes(scene, cubes);
   particlesTrailHandler(scene);
   checkAuraCollision(camera, scene, cubes, player);
+  renderPlayerParticles(scene, player);
   checkPlayerBorderCollision(map, player);
   checkCubesBorderCollision(scene, map, cubes);
-  renderPlayerParticles(scene, player);
   renderFarObjectsHandler(scene, camera, player);
   controller.updateMoves();
   composer.render();

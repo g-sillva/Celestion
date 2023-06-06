@@ -1,9 +1,13 @@
 import * as THREE from "three";
 import { cubeDisappearAnimation } from "./CubeUtils";
-import { playerConsumeHandler } from "./PlayerUtils";
+import { playerConsumeHandler, playerSpawnAnimation } from "./PlayerUtils";
 import { GRAVITACIONAL_CONSTANT } from "./Constants";
 
 export function checkAuraCollision(camera, scene, cubes, player) {
+  if (player.spawned) return;
+
+  playerSpawnAnimation(player);
+
   const circle = player.getAura();
   const circlePosition = new THREE.Vector3(
     circle.position.x,
@@ -12,7 +16,7 @@ export function checkAuraCollision(camera, scene, cubes, player) {
   );
   const G = GRAVITACIONAL_CONSTANT;
   const circleRadius = circle.scale.x * circle.getRadius();
-  const orbitDistance = circleRadius / 2;
+  const orbitDistance = circleRadius / 1.5;
 
   cubes.forEach((cube) => {
     if (cube.position.z === 0 && !cube.isDisappearing) {
@@ -21,8 +25,6 @@ export function checkAuraCollision(camera, scene, cubes, player) {
       const distance = cubePosition.distanceTo(circlePosition);
 
       if (distance < orbitDistance) {
-        cube.velocity.set(0, 0);
-        cube.acceleration.set(0, 0);
 
         player.addParticles(cube);
         playerConsumeHandler(camera, cube, player);
@@ -36,7 +38,6 @@ export function checkAuraCollision(camera, scene, cubes, player) {
         cube.velocity.x -= cube.acceleration.x;
         cube.velocity.y -= cube.acceleration.y;
         cube.velocity.clampLength(0, 0.5);
-        cube.acceleration.set(0, 0);
       }
     }
   });

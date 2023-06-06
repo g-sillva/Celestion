@@ -1,4 +1,4 @@
-import { PLAYER_ROTATION_RATE } from "../utils/Constants";
+import { PLAYER_ACCELERATION_RATE, PLAYER_DAMPING_FACTOR, PLAYER_MAX_SPEED, PLAYER_ROTATION_RATE } from "../utils/Constants";
 
 export class Controller {
   constructor(camera, player, aura) {
@@ -7,9 +7,9 @@ export class Controller {
     this.aura = aura;
     this.keysPressed = {};
 
-    this.accelerationRate = 0.01;
-    this.maxSpeed = 0.09;
-    this.dampingFactor = 0.9;
+    this.accelerationRate = PLAYER_ACCELERATION_RATE;
+    this.maxSpeed = PLAYER_MAX_SPEED;
+    this.dampingFactor = PLAYER_DAMPING_FACTOR;
 
     this.keyMap = {
       a: () => (this.player.acceleration.x -= this.accelerationRate),
@@ -48,6 +48,7 @@ export class Controller {
   updateMoves() {
     Object.keys(this.keysPressed).forEach((key) => {
       if (this.keyMap[key]) {
+        if (this.player.spawned) this.player.spawned = false;
         this.keyMap[key]();
       }
     });
