@@ -20,23 +20,18 @@ export function renderPlayerParticles(scene, player) {
     circle.position.z
   );
 
-  const angleIncrement = (2 * Math.PI) / player.getParticles().length;
+  const particles = player.getParticles();
+  const auraRadius = circle.getRadius();
   const time = performance.now();
-  
-  player.getParticles().forEach((particle, index) => {
-    const particleAngle = index * angleIncrement;
-    const orbitDistance = Math.random() * (player.getAura().getRadius() - PARTICLE_MIN_ORBIT_DISTANCE) + PARTICLE_MIN_ORBIT_DISTANCE;
 
+  particles.forEach(particle => {
     if (particle.orbitRadius === undefined) {
-      particle.initialOrbitRadius = orbitDistance;
+      particle.orbitRadius = PARTICLE_MIN_ORBIT_DISTANCE + Math.random() * (auraRadius - PARTICLE_MIN_ORBIT_DISTANCE);
+      particle.particleAngle = Math.random() * 2 * Math.PI;
     }
 
-    particle.orbitRadius = particle.initialOrbitRadius;
-
-    const orbitX =
-      circlePosition.x + Math.cos(particleAngle + time * PARTICLE_ORBIT_VELOCITY + player.rotation.x) * particle.orbitRadius;
-    const orbitY =
-      circlePosition.y + Math.sin(particleAngle + time * PARTICLE_ORBIT_VELOCITY + player.rotation.y) * particle.orbitRadius;
+    const orbitX = circlePosition.x + Math.cos(particle.particleAngle + time * PARTICLE_ORBIT_VELOCITY + player.rotation.x) * particle.orbitRadius;
+    const orbitY = circlePosition.y + Math.sin(particle.particleAngle + time * PARTICLE_ORBIT_VELOCITY + player.rotation.y) * particle.orbitRadius;
 
     particle.position.x = orbitX;
     particle.position.y = orbitY;
