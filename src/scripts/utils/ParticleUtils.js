@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import { Particle } from "../entities/Particle";
-import { PARTICLE_FADE_RATE, PARTICLE_GENERATION_RATE, PARTICLE_SIZE_DIVIDER, TRAIL_FADE_RATE } from "./Constants";
+import { PARTICLE_DEFAULT_COLOR, PARTICLE_FADE_RATE, PARTICLE_GENERATION_RATE, PARTICLE_SIZE_DIVIDER, TRAIL_FADE_RATE } from "./Constants";
 
 export function generateParticles(scene, map, mass, velocity) {
   const particlesMap = new Map();
@@ -13,7 +13,7 @@ export function generateParticles(scene, map, mass, velocity) {
   if (quantity === 0) quantity = 50;
 
   for (let i = 0; i < quantity; i++) {
-    const particle = new Particle(0xc2352b, mass);
+    const particle = new Particle(PARTICLE_DEFAULT_COLOR, mass);
     const particleRandomSpeed = Math.random() * velocity - velocity;
 
     const randomX = Math.random() * mapWidth - mapWidth / 2;
@@ -30,7 +30,7 @@ export function generateParticles(scene, map, mass, velocity) {
   return particlesMap;
 }
 
-export function animateParticles(scene, particles) {
+export function animateParticles(scene, player, particles) {
   particles.forEach((c) => {
     c.position.x += c.velocity.x;
     c.position.y += c.velocity.y;
@@ -39,14 +39,16 @@ export function animateParticles(scene, particles) {
     c.rotation.y += c.velocity.y;
 
     if (Math.abs(c.velocity.x) > 0.05 || Math.abs(c.velocity.y) > 0.05) {
-      generateParticlesTrail(scene, c);
+      generateParticlesTrail(scene, player, c);
     }
   });
 }
 
 const trailParticlesList = [];
 
-export function generateParticlesTrail(scene, particle) {
+export function generateParticlesTrail(scene, player, particle) {
+  if (player.getParticles().includes(particle)) return;
+  
   const trailGeometry = new THREE.BufferGeometry();
   const trailPositions = new Map();
   trailPositions.set(particle.id, [

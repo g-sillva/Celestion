@@ -80,12 +80,12 @@ scene.add(directionalLight);
 
 function animate() {
   requestAnimationFrame(animate);
-  animateParticles(scene, particles);
+  animateParticles(scene, player, particles);
   particlesTrailHandler(scene);
   checkAuraCollision(camera, scene, particles, player);
   renderPlayerParticles(scene, player);
   checkPlayerBorderCollision(map, player);
-  checkParticlesParticleCollision(scene, particles);
+  checkParticlesParticleCollision(scene, player, particles);
   renderFarObjectsHandler(scene, camera, player);
   checkParticlesBorderCollision(scene, map, particles);
   controller.updateMoves();

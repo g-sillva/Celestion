@@ -8,8 +8,15 @@ import {
   PARTICLE_MIN_ORBIT_DISTANCE,
 } from "./Constants";
 
-export function playerConsumeHandler(camera, player, cubes) {
-  // todo
+export function playerConsumeHandler(
+  scene,
+  particle,
+  player,
+  particlesList
+) {
+  player.addParticles(particle);
+  scene.remove(particle);
+  particlesList.delete(particle);
 }
 
 export function renderPlayerParticles(scene, player) {
@@ -24,7 +31,9 @@ export function renderPlayerParticles(scene, player) {
   const auraRadius = circle.getRadius();
   const time = performance.now();
 
-  particles.forEach(particle => {
+  const particlesToAdd = [];
+
+  particles.forEach((particle) => {
     if (particle.orbitRadius === undefined) {
       particle.orbitRadius = PARTICLE_MIN_ORBIT_DISTANCE + Math.random() * (auraRadius - PARTICLE_MIN_ORBIT_DISTANCE);
       particle.particleAngle = Math.random() * 2 * Math.PI;
@@ -36,8 +45,12 @@ export function renderPlayerParticles(scene, player) {
     particle.position.x = orbitX;
     particle.position.y = orbitY;
 
-    scene.add(particle);
+    particlesToAdd.push(particle);
   });
+
+  particlesToAdd.forEach(p => {
+    scene.add(p);
+  })
 }
 
 export function playerSpawnAnimation(player) {
@@ -54,7 +67,8 @@ export function generatePlayer(camera, scene, color, mass, position) {
   const player = new Player(color, mass, position);
   const circle = player.getAura();
 
-  const distanceFromPlayer = AURA_BASE_SIZE * player.getMass() * CAMERA_Z_POSITION;
+  const distanceFromPlayer =
+    AURA_BASE_SIZE * player.getMass() * CAMERA_Z_POSITION;
 
   const cameraPosition = new THREE.Vector3(0, 0, distanceFromPlayer);
   player.localToWorld(cameraPosition);

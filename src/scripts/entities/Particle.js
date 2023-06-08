@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { PLAYER_SCALE_MULTIPLIER } from "../utils/Constants";
 
 export class Particle extends THREE.Mesh {
   constructor(color, mass) {
@@ -18,6 +19,7 @@ export class Particle extends THREE.Mesh {
 
   addMass(mass) {
     this.mass += mass;
-    this.geometry = new THREE.BoxGeometry(mass * 20, mass * 20, mass * 20);
+    const scale = this.mass / PLAYER_SCALE_MULTIPLIER;
+    this.scale.set(scale, scale, scale);
   }
 }

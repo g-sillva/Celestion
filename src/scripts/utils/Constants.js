@@ -10,6 +10,7 @@ export const PARTICLE_MIN_ORBIT_DISTANCE = 1;
 export const PARTICLE_ORBIT_VELOCITY = 0.0005;
 export const PARTICLE_FADE_RATE = 0.02;
 export const PARTICLE_SIZE_DIVIDER = 10;
+export const PARTICLE_DEFAULT_COLOR = 0xc2352b;
 export const TRAIL_FADE_RATE = 0.05;
 export const CAMERA_Z_POSITION = 7;
 export const CAMERA_NEAR_PLANE = 10;
