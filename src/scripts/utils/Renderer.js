@@ -17,7 +17,6 @@ export function renderFarObjectsHandler(scene, camera, player) {
       object.geometry.computeBoundingSphere();
 
       const distance = playerPosition.distanceTo(object.position);
-
       object.visible = distance <= camera.position.z * 1.5;
     }
   });

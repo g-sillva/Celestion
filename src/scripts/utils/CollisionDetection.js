@@ -3,7 +3,7 @@ import { particleDisappearAnimation } from "./ParticleUtils";
 import { playerConsumeHandler, playerSpawnAnimation } from "./PlayerUtils";
 import { GRAVITACIONAL_CONSTANT } from "./Constants";
 
-export function checkAuraCollision(camera, scene, particles, player) {
+export function checkAuraCollision(scene, particles, player) {
   if (player.spawned) return;
 
   playerSpawnAnimation(player);
@@ -12,7 +12,7 @@ export function checkAuraCollision(camera, scene, particles, player) {
   const circlePosition = new THREE.Vector3(
     circle.position.x,
     circle.position.y,
-    1
+    0
   );
   const G = GRAVITACIONAL_CONSTANT;
   const circleRadius = circle.scale.x * circle.getRadius();
@@ -74,7 +74,7 @@ export function checkParticlesParticleCollision(scene, player, particles) {
             return;
           } else {
             scene.remove(particleA);
-            particleB.addMass(particleA.getMass() * 2);
+            particleB.addMass(particleA.getMass());
             particleB.material.color.setHex(0xffffff);
           }
         }
@@ -102,19 +102,22 @@ export function checkPlayerBorderCollision(map, player) {
   }
 }
 
-export function checkParticlesBorderCollision(scene, map, particles) {
+export function checkParticlesBorderCollision(scene, map, player, particles) {
   const mapWidth = map.getWidth();
   const mapHeight = map.getHeight();
 
+  const playerParticlesSet = new Set(player.getParticles());
+
   particles.forEach((particle) => {
+    if (playerParticlesSet.has(particle)) return;
     const particlePosition = particle.position;
     const particleScale = particle.scale;
 
     if (
       particlePosition.x + particleScale.x > mapWidth / 2 ||
-      particlePosition.x - particleScale.x < -mapWidth / 1.5 ||
-      particlePosition.y + particleScale.y > mapHeight / 1.5 ||
-      particlePosition.y - particleScale.y < -mapHeight / 1.5
+      particlePosition.x - particleScale.x < -mapWidth / 2 ||
+      particlePosition.y + particleScale.y > mapHeight / 2 ||
+      particlePosition.y - particleScale.y < -mapHeight / 2
     ) {
       particle.isDisappearing = true;
       particleDisappearAnimation(scene, particle, particles);

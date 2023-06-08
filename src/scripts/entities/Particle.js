@@ -1,9 +1,8 @@
 import * as THREE from "three";
-import { PLAYER_SCALE_MULTIPLIER } from "../utils/Constants";
-
+import { PARTICLE_MAX_MASS } from "../utils/Constants";
 export class Particle extends THREE.Mesh {
   constructor(color, mass) {
-    const geometry = new THREE.BoxGeometry(mass * 20, mass * 20, mass * 20);
+    const geometry = new THREE.BoxGeometry(mass, mass, mass);
     const material = new THREE.MeshStandardMaterial({ color, transparent: true, opacity: 1, emissive: color, roughness: 0.5 });
     super(geometry, material);
     
@@ -18,8 +17,11 @@ export class Particle extends THREE.Mesh {
   }
 
   addMass(mass) {
-    this.mass += mass;
-    const scale = this.mass / PLAYER_SCALE_MULTIPLIER;
-    this.scale.set(scale, scale, scale);
+    let newMass = this.mass + mass;
+    if (newMass > PARTICLE_MAX_MASS) {
+      newMass = PARTICLE_MAX_MASS - newMass;
+    }
+    this.mass = newMass;
+    this.geometry = new THREE.BoxGeometry(mass, mass, mass);
   }
 }

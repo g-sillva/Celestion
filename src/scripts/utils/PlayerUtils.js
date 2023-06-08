@@ -6,15 +6,20 @@ import {
   CAMERA_Z_POSITION,
   PARTICLE_ORBIT_VELOCITY,
   PARTICLE_MIN_ORBIT_DISTANCE,
+  PLAYER_MAX_PARTICLES,
 } from "./Constants";
 
-export function playerConsumeHandler(
-  scene,
-  particle,
-  player,
-  particlesList
-) {
-  player.addParticles(particle);
+export function playerConsumeHandler(scene, particle, player, particlesList) {
+  const smallest = smallestParticle(player);
+
+  if (player.getParticles().length > PLAYER_MAX_PARTICLES) {
+    if (!particle.consumed) {
+      smallest.addMass(particle.getMass());
+      particle.consumed = true;
+    }
+  } else {
+    player.addParticles(particle);
+  }
   scene.remove(particle);
   particlesList.delete(particle);
 }
@@ -96,4 +101,18 @@ export function generateRandomColor() {
   } while (brightness < minBrightness || brightness > maxBrightness);
 
   return color;
+}
+
+function smallestParticle(player) {
+  const particles = player.getParticles();
+  let smallestParticle = particles[0];
+
+  for (let i = 1; i < particles.length; i++) {
+    const currentParticle = particles[i];
+    if (currentParticle.getMass() < smallestParticle.getMass()) {
+      smallestParticle = currentParticle;
+    }
+  }
+
+  return smallestParticle;
 }

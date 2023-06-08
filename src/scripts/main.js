@@ -82,12 +82,12 @@ function animate() {
   requestAnimationFrame(animate);
   animateParticles(scene, player, particles);
   particlesTrailHandler(scene);
-  checkAuraCollision(camera, scene, particles, player);
+  checkAuraCollision(scene, particles, player);
   renderPlayerParticles(scene, player);
   checkPlayerBorderCollision(map, player);
   checkParticlesParticleCollision(scene, player, particles);
   renderFarObjectsHandler(scene, camera, player);
-  checkParticlesBorderCollision(scene, map, particles);
+  checkParticlesBorderCollision(scene, map, player, particles);
   controller.updateMoves();
   composer.render();
 }
