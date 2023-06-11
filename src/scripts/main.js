@@ -4,7 +4,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 
 import { Controller } from "./controller/Controller";
-import { animateParticles, generateParticles, particlesTrailHandler } from "./utils/ParticleUtils";
+import { animateParticles, generateParticles } from "./utils/ParticleUtils";
 import { buildRenderer, renderFarObjectsHandler } from "./utils/Renderer";
 import {
   checkAuraCollision,
@@ -80,8 +80,7 @@ scene.add(directionalLight);
 
 function animate() {
   requestAnimationFrame(animate);
-  animateParticles(scene, player, particles);
-  particlesTrailHandler(scene);
+  animateParticles(particles);
   checkAuraCollision(scene, particles, player);
   renderPlayerParticles(scene, player);
   checkPlayerBorderCollision(map, player);

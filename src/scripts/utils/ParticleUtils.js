@@ -1,7 +1,5 @@
-import * as THREE from "three";
-
 import { Particle } from "../entities/Particle";
-import { PARTICLE_DEFAULT_COLOR, PARTICLE_FADE_RATE, PARTICLE_GENERATION_RATE, PARTICLE_SIZE_DIVIDER, TRAIL_FADE_RATE } from "./Constants";
+import { PARTICLE_DEFAULT_COLOR, PARTICLE_FADE_RATE, PARTICLE_GENERATION_RATE } from "./Constants";
 
 export function generateParticles(scene, map, mass, velocity) {
   const particlesMap = new Map();
@@ -30,66 +28,13 @@ export function generateParticles(scene, map, mass, velocity) {
   return particlesMap;
 }
 
-export function animateParticles(scene, player, particles) {
+export function animateParticles(particles) {
   particles.forEach((c) => {
     c.position.x += c.velocity.x;
     c.position.y += c.velocity.y;
     c.position.z += c.velocity.z;
     c.rotation.x += c.velocity.x;
     c.rotation.y += c.velocity.y;
-
-    if (Math.abs(c.velocity.x) > 0.05 || Math.abs(c.velocity.y) > 0.05) {
-      generateParticlesTrail(scene, player, c);
-    }
-  });
-}
-
-const trailParticlesList = [];
-
-export function generateParticlesTrail(scene, player, particle) {
-  if (player.getParticles().includes(particle)) return;
-  
-  const trailGeometry = new THREE.BufferGeometry();
-  const trailPositions = new Map();
-  trailPositions.set(particle.id, [
-    particle.position.x,
-    particle.position.y,
-    particle.position.z,
-  ]);
-  const positionArray = Array.from(trailPositions.values()).flat();
-  trailGeometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(positionArray, 3)
-  );
-
-  const trailMaterial = new THREE.PointsMaterial({
-    color: particle.material.color,
-    size: particle.getMass() / PARTICLE_SIZE_DIVIDER,
-    opacity: 0.5,
-    transparent: true,
-  });
-
-  const trailParticles = new THREE.Points(trailGeometry, trailMaterial);
-  scene.add(trailParticles);
-  trailParticlesList.push(trailParticles);
-}
-
-export function particlesTrailHandler(scene) {
-  const removalList = [];
-
-  trailParticlesList.forEach((particle) => {
-    const material = particle.material;
-    material.opacity -= TRAIL_FADE_RATE;
-
-    if (material.opacity <= 0) {
-      removalList.push(particle);
-      scene.remove(particle);
-    }
-  });
-
-  removalList.forEach((particle) => {
-    scene.remove(particle);
-    trailParticlesList.splice(trailParticlesList.indexOf(particle), 1);
   });
 }
 
