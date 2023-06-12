@@ -7,14 +7,22 @@ import {
   PARTICLE_ORBIT_VELOCITY,
   PARTICLE_MIN_ORBIT_DISTANCE,
   PLAYER_MAX_PARTICLES,
-  PLAYER_INITIAL_MASS,
   PLAYER_SCALE_MULTIPLIER,
+  AURA_MAX_ENTITIES_COLOR,
+  AURA_COLOR,
 } from "./Constants";
 
 export function playerConsumeHandler(scene, particle, player, particlesList) {
   const smallest = smallestParticle(player);
+  const aura = player.getAura();
 
   if (player.getParticles().length > PLAYER_MAX_PARTICLES && smallest) {
+    aura.setColor(AURA_MAX_ENTITIES_COLOR);
+
+    setTimeout(() => {
+      aura.setColor(AURA_COLOR);
+    }, 100);
+
     if (!particle.consumed) {
       smallest.addMass(particle.getMass());
       particle.consumed = true;

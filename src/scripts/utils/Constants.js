@@ -1,5 +1,6 @@
 export const AURA_OPACITY = 0.1;
 export const AURA_COLOR = 0x14151a;
+export const AURA_MAX_ENTITIES_COLOR = 0x1e1414;
 export const AURA_SEGMENTS = 32;
 export const AURA_BASE_SIZE = 2;
 export const AURA_ACCELERATION_INCREASE = 0.1;

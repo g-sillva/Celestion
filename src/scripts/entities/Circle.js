@@ -15,6 +15,10 @@ export class Circle extends THREE.Mesh {
     this.position.copy(this.player.position);
   }
 
+  setColor(color) {
+    this.material.color.setHex(color);
+  }
+
   setRadius(radius) {
     this.geometry.dispose();
     this.geometry = new THREE.CircleGeometry(radius, AURA_SEGMENTS);
