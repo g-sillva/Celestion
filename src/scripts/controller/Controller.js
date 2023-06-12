@@ -1,8 +1,10 @@
 import { PLAYER_ACCELERATION_RATE, PLAYER_DAMPING_FACTOR, PLAYER_MAX_SPEED, PLAYER_ROTATION_RATE } from "../utils/Constants";
+import { consumeOrbitParticles } from "../utils/ParticleUtils";
 
 export class Controller {
-  constructor(camera, player, aura) {
+  constructor(scene, camera, player, aura) {
     this.camera = camera;
+    this.scene = scene;
     this.player = player;
     this.aura = aura;
     this.keysPressed = {};
@@ -16,6 +18,7 @@ export class Controller {
       d: () => (this.player.acceleration.x += this.accelerationRate),
       s: () => (this.player.acceleration.y -= this.accelerationRate),
       w: () => (this.player.acceleration.y += this.accelerationRate),
+      e: () => consumeOrbitParticles(this.scene, this.camera, this.player),
       " ": () => this.stopPlayer(),
     };
 

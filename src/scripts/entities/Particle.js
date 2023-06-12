@@ -19,7 +19,7 @@ export class Particle extends THREE.Mesh {
   addMass(mass) {
     let newMass = this.mass + mass;
     if (newMass > PARTICLE_MAX_MASS) {
-      newMass = PARTICLE_MAX_MASS - newMass;
+      newMass = newMass - PARTICLE_MAX_MASS;
     }
     this.mass = newMass;
     this.geometry = new THREE.BoxGeometry(mass, mass, mass);

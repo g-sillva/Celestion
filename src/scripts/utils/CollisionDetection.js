@@ -16,7 +16,7 @@ export function checkAuraCollision(scene, particles, player) {
   );
   const G = GRAVITACIONAL_CONSTANT;
   const circleRadius = circle.scale.x * circle.getRadius();
-  const orbitDistance = circleRadius / 1.5;
+  const orbitDistance = circleRadius / 2;
 
   const playerParticlesSet = new Set(player.getParticles());
 
@@ -25,6 +25,7 @@ export function checkAuraCollision(scene, particles, player) {
       const particlePosition = new THREE.Vector2(particle.position.x, particle.position.y);
       const particleRadius = particle.geometry.parameters.width / 2;
       const distance = particlePosition.distanceTo(circlePosition);
+      particles.delete(particle);
 
       if (distance < orbitDistance) {
         playerConsumeHandler(scene, particle, player, particles);
@@ -74,6 +75,7 @@ export function checkParticlesParticleCollision(scene, player, particles) {
             return;
           } else {
             scene.remove(particleA);
+            particles.delete(particleA.id);
             particleB.addMass(particleA.getMass());
             particleB.material.color.setHex(0xffffff);
           }

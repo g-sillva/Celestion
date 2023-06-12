@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Circle } from "./Circle";
-import { PLAYER_SCALE_MULTIPLIER } from "../utils/Constants";
+import { PLAYER_MAX_MASS, PLAYER_SCALE_MULTIPLIER } from "../utils/Constants";
 
 export class Player extends THREE.Mesh {
   constructor(color, mass, position) {
@@ -28,6 +28,17 @@ export class Player extends THREE.Mesh {
   getParticles() {
     return this.particles;
   }
+  
+  setParticles(particles) {
+    this.particles = particles;
+  }
+
+  removeParticle(particle) {
+    const index = this.particles.indexOf(particle);
+    if (index !== -1) {
+      this.particles.splice(index, 1);
+    }
+  }
 
   addParticles(particle) {
     particle.material.color.set(this.color);
@@ -37,6 +48,13 @@ export class Player extends THREE.Mesh {
 
   getMass() {
     return this.mass;
+  }
+
+  addMass(mass) {
+    if (this.mass + mass < PLAYER_MAX_MASS) {
+      this.mass += mass;
+      this.geometry = new THREE.SphereGeometry(this.mass * PLAYER_SCALE_MULTIPLIER, 32, 32);
+    }
   }
 
   setMass(mass) {

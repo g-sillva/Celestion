@@ -46,8 +46,6 @@ const player = generatePlayer(
 
 const map = new Map(scene, MAP_WIDTH, MAP_HEIGHT, MAP_BORDER_COLOR);
 
-const controller = new Controller(camera, player, player.getAura());
-
 const renderer = buildRenderer(
   window.innerWidth,
   window.innerHeight,
@@ -60,6 +58,8 @@ const particles = generateParticles(
   PARTICLE_MASS,
   PARTICLE_DEFAULT_VELOCITY
 );
+
+const controller = new Controller(scene, camera, player, player.getAura());
 
 const composer = new EffectComposer(renderer);
 
@@ -80,8 +80,8 @@ scene.add(directionalLight);
 
 function animate() {
   requestAnimationFrame(animate);
-  animateParticles(particles);
   checkAuraCollision(scene, particles, player);
+  animateParticles(particles);
   renderPlayerParticles(scene, player);
   checkPlayerBorderCollision(map, player);
   checkParticlesParticleCollision(scene, player, particles);

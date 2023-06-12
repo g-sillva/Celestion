@@ -1,5 +1,6 @@
 import { Particle } from "../entities/Particle";
 import { PARTICLE_DEFAULT_COLOR, PARTICLE_FADE_RATE, PARTICLE_GENERATION_RATE } from "./Constants";
+import { handleCameraPosition } from "./PlayerUtils";
 
 export function generateParticles(scene, map, mass, velocity) {
   const particlesMap = new Map();
@@ -46,4 +47,19 @@ export function particleDisappearAnimation(scene, particle, particles) {
     scene.remove(particle);
     particles.delete(particle.id);
   }
+}
+
+export function consumeOrbitParticles(scene, camera, player) {
+  const playerParticles = player.getParticles().slice();
+  let particlesTotalMass = 0;
+
+  playerParticles.forEach(p => {
+    particlesTotalMass += p.getMass();
+    player.removeParticle(p);
+    scene.remove(p);
+  });
+
+  player.addMass(particlesTotalMass);
+
+  handleCameraPosition(player, camera);
 }

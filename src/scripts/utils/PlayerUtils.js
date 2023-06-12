@@ -7,12 +7,14 @@ import {
   PARTICLE_ORBIT_VELOCITY,
   PARTICLE_MIN_ORBIT_DISTANCE,
   PLAYER_MAX_PARTICLES,
+  PLAYER_INITIAL_MASS,
+  PLAYER_SCALE_MULTIPLIER,
 } from "./Constants";
 
 export function playerConsumeHandler(scene, particle, player, particlesList) {
   const smallest = smallestParticle(player);
 
-  if (player.getParticles().length > PLAYER_MAX_PARTICLES) {
+  if (player.getParticles().length > PLAYER_MAX_PARTICLES && smallest) {
     if (!particle.consumed) {
       smallest.addMass(particle.getMass());
       particle.consumed = true;
@@ -20,8 +22,9 @@ export function playerConsumeHandler(scene, particle, player, particlesList) {
   } else {
     player.addParticles(particle);
   }
+
   scene.remove(particle);
-  particlesList.delete(particle);
+  particlesList.delete(particle.id);
 }
 
 export function renderPlayerParticles(scene, player) {
@@ -72,12 +75,7 @@ export function generatePlayer(camera, scene, color, mass, position) {
   const player = new Player(color, mass, position);
   const circle = player.getAura();
 
-  const distanceFromPlayer =
-    AURA_BASE_SIZE * player.getMass() * CAMERA_Z_POSITION;
-
-  const cameraPosition = new THREE.Vector3(0, 0, distanceFromPlayer);
-  player.localToWorld(cameraPosition);
-  camera.position.copy(cameraPosition);
+  handleCameraPosition(player, camera);
 
   scene.add(player);
   scene.add(circle);
@@ -115,4 +113,13 @@ function smallestParticle(player) {
   }
 
   return smallestParticle;
+}
+
+export function handleCameraPosition(player, camera) {
+  const distanceFromPlayer = Math.max(CAMERA_Z_POSITION, AURA_BASE_SIZE * player.getMass() * PLAYER_SCALE_MULTIPLIER);
+  camera.position.z = distanceFromPlayer;
+
+  const fov = Math.min(75, 75 + player.getMass() * PLAYER_SCALE_MULTIPLIER * 10);
+  camera.fov = fov;
+  camera.updateProjectionMatrix();
 }
